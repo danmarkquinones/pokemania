@@ -1,11 +1,14 @@
-import React , {useEffect , useState} from "react"
-import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native"
-import axios from "axios"
-import { formatPokemonName } from "../../../helpers/textFormat.helper"
-import { FlatList } from "react-native-gesture-handler"
+import React , {useEffect , useState} from "react";
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import axios from "axios";
+import { formatPokemonName } from "../../../helpers/textFormat.helper";
+import { FlatList } from "react-native-gesture-handler";
+import {singlePokemonStyles} from "./SinglePokemonStyles";
+import Fallbacks from "../../../shared_components/Fallbacks";
+import NoImage from "../../../shared_components/NoImage";
 
 const Forms = (props) => {
-    const {forms , navigation} = props
+    const {pokemon , forms , navigation} = props
     const [pokemonForms,setPokemonForms] = useState([])
     const [loading,setLoading] = useState(false)
     
@@ -31,7 +34,7 @@ const Forms = (props) => {
         // }
     }, [forms])
 
-    console.log("RES" , pokemonForms)
+    console.log("FORMS" , pokemonForms)
     return (
         <View>
             {loading ? 
@@ -41,23 +44,30 @@ const Forms = (props) => {
                     <FlatList
                         data={pokemonForms}
                         keyExtractor={(item,i)=>item.id.toString()}
-                        numColumns={2}
+                        numColumns={3}
                         renderItem={({item})=>{
                             return(
-                                <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
-                                    <View style={{borderWidth:1 , alignItems:"center" , padding:10 , marginHorizontal : 10}}>
-                                        <Image
-                                            style={{height:70 , width:70}}
-                                            source={{uri:item.sprites.other["official-artwork"]["front_default"]}}
-                                            // sourc={{uri:`https://bulbapedia.bulbagarden.net/wiki/File:009Blastoise-Gigantamax.png`}}
-                                        />
-                                        <Text>{formatPokemonName( item.name )}</Text>
+                                <TouchableOpacity style={{marginHorizontal:10}} onPress={()=>navigation.navigate('PokemonSingle' , item)}>
+                                    <View 
+                                        style={[
+                                            pokemon.name === item.name ? singlePokemonStyles(pokemon).activeEvolve : singlePokemonStyles(pokemon).inactiveEvolve,
+                                            {width:100}
+                                        ]}
+                                    >
+                                        {item.sprites.other["official-artwork"]["front_default"]?
+                                            <Image
+                                                style={{height:70 , width:70}}
+                                                source={{uri:item.sprites.other["official-artwork"]["front_default"]}}
+                                            />
+                                            :<NoImage name={formatPokemonName( item.name )} dimension={70}/>
+                                        }
+                                        {/* <Text>{}</Text> */}
                                     </View>
                                 </TouchableOpacity>
                             )}}
                     />
                 </SafeAreaView>
-            :<Text>No Forms</Text>
+            :<Fallbacks text="This pokemon has no forms."/>
             }
         </View>
     )

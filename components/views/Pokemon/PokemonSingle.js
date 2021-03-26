@@ -7,9 +7,12 @@ import {generateTypeIcon , generateTypeColor} from "../../helpers/types.helper"
 import AbilitiesMoves from "./PokemonSingleViewChildren/AbilitiesMoves"
 import BaseStats from "./PokemonSingleViewChildren/BaseStats";
 import Breeding from "./PokemonSingleViewChildren/Breeding";
-import EvolutionTree from "./PokemonSingleViewChildren/EvolutionTree"
+import EvolutionTree from "./PokemonSingleViewChildren/EvolutionTree";
+import Encounter from "./PokemonSingleViewChildren/Encounter";
 import { generatePokemonImage } from "../../helpers/pokemonImages.helper";
 import Forms from "./PokemonSingleViewChildren/Forms";
+import { SafeAreaView } from "react-navigation";
+import Loader from "../../shared_components/Loader";
 
 const PokemonSingle = (props) => {
     const {navigation , route} = props
@@ -61,7 +64,8 @@ const PokemonSingle = (props) => {
 
     const styles = StyleSheet.create({
         breedCardContainer : {
-            flex:1,
+            // flex:1,
+            // width:"100%",
             margin:3,
             borderRadius:5,
             overflow:"hidden",
@@ -77,8 +81,9 @@ const PokemonSingle = (props) => {
 
     return (
         <TouchableWithoutFeedback>
-            <ScrollView>
-                {pokemon && pokemonSpecie ? <View style={pokemonStyles.singleViewPokemonContainer}>
+            {pokemon && pokemonSpecie ? 
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={pokemonStyles.singleViewPokemonContainer}>
                     <View style={pokemonStyles.singleViewPokemonHeadCont}>
 
                         <View style={pokemonStyles.singleViewPokemonPrevCont}>
@@ -98,7 +103,10 @@ const PokemonSingle = (props) => {
 
                         <View style={pokemonStyles.singleViewPokemonName}>
                             <Text style={{fontWeight:"bold" , fontSize:16 ,color:"#fff" , textTransform:"uppercase"}}>{pokemon.name}</Text>
-                            <Text style={{backgroundColor:"#fff" , paddingHorizontal:10 , marginHorizontal:10 , borderRadius:5}}>#{pokemon.id}</Text>
+                            {pokemon.id < 1000 ?
+                                <Text style={{backgroundColor:"#fff" , paddingHorizontal:10 , marginHorizontal:10 , borderRadius:5}}>#N {pokemon.id}</Text>
+                            :null
+                            }
                         </View>
 
                         <View style={pokemonStyles.singleViewPokemonNextCont}>
@@ -164,7 +172,7 @@ const PokemonSingle = (props) => {
                         </View>
                         
                         <View style={{flexDirection:"row" , paddingHorizontal :10 , marginTop:10}}>
-                            <View style={styles.breedCardContainer}>
+                            <View style={[styles.breedCardContainer, {flex:1}]}>
                                 <View style={styles.breedCardHeader}>
                                     <Text style={pokemonStyles.breedCardHeaderText}>Height</Text>
                                 </View>
@@ -173,7 +181,7 @@ const PokemonSingle = (props) => {
                                 </View>
                             </View>
 
-                            <View style={styles.breedCardContainer}>
+                            <View style={[styles.breedCardContainer, {flex:1}]}>
                                 <View style={styles.breedCardHeader}>
                                     <Text style={pokemonStyles.breedCardHeaderText}>Weight</Text>
                                 </View>
@@ -189,7 +197,9 @@ const PokemonSingle = (props) => {
                             <Text style={pokemonStyles.singleViewPokemonContentTitleText}>Ability & Moves</Text>
                             <View style={pokemonStyles.singleViewDivider}></View>
                         </View>
+                        <SafeAreaView>
                         <AbilitiesMoves pokemon={pokemon} pokemonSpecie={pokemonSpecie}/>
+                        </SafeAreaView>
                     </View>
 
                     <View style={pokemonStyles.singleViewPokemonContent}>
@@ -221,7 +231,7 @@ const PokemonSingle = (props) => {
                             <Text style={pokemonStyles.singleViewPokemonContentTitleText}>Forms</Text>
                             <View style={pokemonStyles.singleViewDivider}></View>
                         </View>
-                        <Forms forms={pokemonSpecie.varieties} navigation={navigation} />
+                        <Forms pokemon={pokemon} forms={pokemonSpecie.varieties} navigation={navigation} />
                     </View>
 
                     <View style={pokemonStyles.singleViewPokemonContent}>
@@ -229,12 +239,19 @@ const PokemonSingle = (props) => {
                             <Text style={pokemonStyles.singleViewPokemonContentTitleText}>Location</Text>
                             <View style={pokemonStyles.singleViewDivider}></View>
                         </View>
+                        <Encounter pokemon={pokemon}/>                     
                     </View>
-
                 </View>
-                :<Text>LOADING...</Text>
-                }
             </ScrollView>
+            :<View
+                style={{
+                    flex:1,
+                    alignItems:"center"
+                }}
+            >
+                <Loader length={3}/>
+            </View>
+            }
         </TouchableWithoutFeedback>
     )
 }

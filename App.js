@@ -1,14 +1,20 @@
 import React from 'react';
 import { StyleSheet} from 'react-native';
+import { AsyncStoreContextProvider } from './components/context/asyncStorageContext';
 import { PokemonContextProvider } from './components/context/pokemonContext';
+import {SearchesContextContextProvider } from './components/context/searchesContext';
 // import Home  from "./components/home"
 import Navigation from "./components/routes/Navigation"
 
 export default function App() {
   return (
-    <PokemonContextProvider>
-      <Navigation/>
-    </PokemonContextProvider>
+    <AsyncStoreContextProvider>
+      <SearchesContextContextProvider>
+        <PokemonContextProvider>
+          <Navigation/>
+        </PokemonContextProvider>
+      </SearchesContextContextProvider>
+    </AsyncStoreContextProvider>
   );
 }
 

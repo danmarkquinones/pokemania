@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 export const pokemonStyles = StyleSheet.create({
     container:{
         flex:1,
+        backgroundColor:"#f2f2f2"
+        // backgroundColor:
     },
     displayRow:{
         flexDirection:"row",
@@ -15,7 +17,9 @@ export const pokemonStyles = StyleSheet.create({
         width:100,
         borderBottomLeftRadius: 10,
         borderTopRightRadius:10,
-        overflow:"hidden"
+        overflow:"hidden",
+        shadowColor:"gray",
+        shadowRadius:7
     },
     cardHeader:{
         padding:8,

@@ -77,13 +77,11 @@ const AbilitiesMoves = (props) => {
     return (
         <View style={{padding:10}}>
             <View style={{flexDirection:"column"}}>
-
                 <View style={styles.abilityContainer}>
                     <View style={styles.abilityHeader}>
                         <Text style={styles.abilityHeaderText}>ABILITIES</Text>
                     </View>
-                    <View style={{marginTop:12}}>
-                        <SafeAreaView>
+                    <View style={{marginTop:12 , flex:1}}>
                             <FlatList
                                 data={pokemon.abilities}
                                 keyExtractor={(item,i)=>item.ability.name}
@@ -96,7 +94,6 @@ const AbilitiesMoves = (props) => {
                                     )
                                 }}
                             />
-                        </SafeAreaView>
                     </View>
                 </View>
 

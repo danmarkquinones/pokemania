@@ -4,20 +4,26 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons , MaterialCommunityIcons } from '@expo/vector-icons';
 
 import CustomHeader from "../shared_components/CustomHeader"
 import PokemonLists from "../views/Pokemon/PokemonLists"
 import PokemonSingle from "../views/Pokemon/PokemonSingle"
 import ItemLists from "../views/Items/ItemLists"
 import PokemonSearch from "../views/Pokemon/PokemonSearch";
+import FavoriteLists from "../views/Favorites/FavoriteLists";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 
 const headerTitle = (title , navigation) => {
-    let obj = {headerTitle:()=><CustomHeader title={title} navigation={navigation}/>}
+    let obj = {
+        headerTitle:()=><CustomHeader title={title} navigation={navigation}/> , 
+        headerStyle:{
+            backgroundColor:"#F93318",
+        }
+    }
     return obj
 }
 
@@ -46,27 +52,55 @@ const ItemStackNavigator = () => (
         <Stack.Screen
             name="ItemLists"
             component={ItemLists}
-            header="Items"
+            // header="Items"
+            options={({navigation})=>headerTitle('Items' , navigation)}
+        />
+        {/* <Stack.Screen
+            name="PokemonSingle"
+            component={PokemonSingle}
+            options={({navigation})=>headerTitle('Pokemon Details' , navigation)}
+        />  */}
+    </Stack.Navigator>
+)
+
+const FavoritesStackNavigator = () => (
+    <Stack.Navigator>
+        <Stack.Screen
+            name="FavoriteLists"
+            component={FavoriteLists}
+            options={({navigation})=>headerTitle('Favorites' , navigation)}
         />
     </Stack.Navigator>
 )
 
 const AppTabNavigator = () => (
-    <Tab.Navigator initialRouteName="Home" activeColor="black" shifting="false">
+    <Tab.Navigator initialRouteName="Home" shifting="true" 
+        tabBarOptions={{
+            activeTintColor:"#F93318",
+        }}
+    >
 
         <Tab.Screen name="PokemonStackNavigator" component={PokemonStackNavigator} 
             options={{
-                tabBarLabel: 'Pokemons',
+                tabBarLabel: '',
                 tabBarIcon: ({ color }) => (
-                    <MaterialIcons name="home" color={color} size={26} />
+                    <MaterialCommunityIcons name="pokeball" color={color} size={26} />
                 )
             }}
         />
         <Tab.Screen name="ItemStackNavigator" component={ItemStackNavigator}
             options={{
-                tabBarLabel: 'Items',
+                tabBarLabel: '',
                 tabBarIcon: ({ color }) => (
-                    <MaterialIcons name="star" color={color} size={26} />
+                    <MaterialCommunityIcons name="fruit-cherries" color={color} size={26} />
+                )
+            }} 
+        />
+        <Tab.Screen name="FavoritesStackNavigator" component={FavoritesStackNavigator}
+            options={{
+                tabBarLabel: '',
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="favorite" color={color} size={26} />
                 )
             }} 
         />
