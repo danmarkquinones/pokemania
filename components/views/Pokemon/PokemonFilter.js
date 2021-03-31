@@ -9,9 +9,13 @@ import CheckBox from "react-native-check-box";
 
 const PokemonFilter = (props) => {
 
+    const {navigation} = props
     const [pokemons , setPokemons , filters , setFilters] = useContext(PokemonContext)
     const [typeHolder , setTypeHolder] = useState([])
     const [loading , setLoading] = useState(false)
+    const [message , setMessage] = useState({status:"",text:""})
+
+    console.log(filters.start,filters.end,filters.selectedTypes)
     
     useEffect(()=>{
         setTypeHolder(filters.types)
@@ -42,6 +46,7 @@ const PokemonFilter = (props) => {
 
     const onSubmit = () => {
         setLoading(true)
+        setMessage({...message, status:"pending" , text : "Searching for results...Please wait..."})
         var offset = filters.start - 1
         var limit = (filters.end - filters.start) + 1
         setFilters({...filters,default:true})
@@ -70,8 +75,15 @@ const PokemonFilter = (props) => {
                         }
                         setPokemons(filteredPokemon)
                         setLoading(false)
+                        setMessage({
+                            ...message, 
+                            status:"success" , 
+                            text : filteredPokemon.length?`Found ${filteredPokemon.length} on your query`:'No pokemon found on your query, kindly change your filter'
+                        })
                     }
-                }).catch(e=>console.log(e))
+                }).catch(e=>{
+                    setMessage({...message, status:"error" , text : `Request failed.. Please try again later..`})
+                })
             })
         }).catch(e => console.log('FETCH FAILED',e))
     }
@@ -81,6 +93,7 @@ const PokemonFilter = (props) => {
             style={{
                 padding:10,
                 backgroundColor:"#fff",
+                flex:1
             }}
         >
             <View>
@@ -103,7 +116,7 @@ const PokemonFilter = (props) => {
                         <TextInput 
                             keyboardType='numeric'
                             style={pokemonStyles.filterTextField}
-                            value={filters.start}
+                            value={+filters.start}
                             onChangeText={text=>handleChange("start",+text)}
                         />
                     </View>
@@ -124,7 +137,7 @@ const PokemonFilter = (props) => {
                         <TextInput
                             keyboardType='numeric'
                             style={pokemonStyles.filterTextField}
-                            value={filters.end}
+                            value={+filters.end}
                             onChangeText={text=>handleChange("end",+text)}
                         />
                     </View>
@@ -173,14 +186,23 @@ const PokemonFilter = (props) => {
                     :null}
                 </View>
             </View>
-            
-            <View
-                style={{
-                    display:"flex",
-                    alignItems:"flex-end",
-                    marginTop:10
-                }}
-            >
+
+            <Divider style={{marginVertical:5}}/>
+                        
+            <View style={{display:"flex" , flexDirection:"row", alignItems:"center" , flex:1}}>
+                <Text style={{color : message.status==="success"? "lime" :message.status==="pending"?"gray": "tomato"}}>{message.text}</Text>
+                {message.status === "success" && pokemons.length?
+                    <TouchableOpacity onPress={()=>navigation.navigate("PokemonLists")}>
+                        <View style={{marginHorizontal:10}}>
+                            <Text>See Results</Text>
+                        </View>
+                    </TouchableOpacity>
+                :null}
+            </View>
+
+            <Divider style={{marginVertical:5}}/>
+
+            <View style={{display:"flex" , alignItems:"flex-end" , justifyContent:"flex-end", flex:1}}>
                 {loading?
                     <View style={pokemonStyles.filterSubmitButtonView}>
                         <Text style={{color:"#fff"}}>LOADING...</Text>

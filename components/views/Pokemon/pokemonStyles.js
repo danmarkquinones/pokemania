@@ -174,11 +174,11 @@ export const pokemonStyles = StyleSheet.create({
     filterSubmitButtonView:{
         backgroundColor:"tomato" , 
         borderRadius:5 , 
-        flex:1,
+        // flex:1,
         display:"flex" , 
         alignItems:"center" , 
         paddingHorizontal:20,
-        paddingVertical:5
+        paddingVertical:5,
     },
     typeListView:{
         flex:1,

@@ -1,4 +1,4 @@
-import React , {useEffect , useState} from "react"
+import React , {useEffect , useState ,useContext} from "react"
 import axios from "axios"
 import { View , Text ,TouchableWithoutFeedback , Image ,ScrollView, TouchableOpacity, StyleSheet } from "react-native"
 import {pokemonStyles} from "./pokemonStyles"
@@ -13,6 +13,9 @@ import { generatePokemonImage } from "../../helpers/pokemonImages.helper";
 import Forms from "./PokemonSingleViewChildren/Forms";
 import { SafeAreaView } from "react-navigation";
 import Loader from "../../shared_components/Loader";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStoreContext } from "../../context/asyncStorageContext"
+import { checkInFavorites } from "../../helpers/favorites.helper"
 
 const PokemonSingle = (props) => {
     const {navigation , route} = props
@@ -20,6 +23,7 @@ const PokemonSingle = (props) => {
 
     const [pokemon , setPokemon] = useState()
     const [pokemonSpecie , setPokemonSpecie] = useState()
+    const [favorites , setFavorites] = useContext(AsyncStoreContext)
 
     useEffect(() => {
         if(data){
@@ -60,6 +64,19 @@ const PokemonSingle = (props) => {
         }else{
             fetchPokemon(id-1)
         }
+    }
+
+    const addToFavorite = (pokemon) => {
+        setFavorites([...favorites , pokemon])
+        var favCopy = favorites
+        favCopy.push(pokemon)
+        AsyncStorage.setItem("favoritesPokemons" , JSON.stringify(favCopy))
+    }
+
+    const removeFromFavorite = (pokemon) => {
+        const filtered = favorites.filter(fav=>fav.id!==pokemon.id)
+        setFavorites(filtered) 
+        AsyncStorage.setItem("favoritesPokemons" , JSON.stringify(filtered))
     }
 
     const styles = StyleSheet.create({
@@ -123,6 +140,16 @@ const PokemonSingle = (props) => {
                         <View style={pokemonStyles.singleViewPokemonHeader}>
                             {pokemonSpecie ? 
                             <View style={pokemonStyles.singleViewPokemonDetails}>
+
+                                <View style={{position:"absolute" , top:0 , right:-200 , zIndex:10}}>
+                                    <TouchableOpacity 
+                                        onPress={()=>checkInFavorites(pokemon , favorites)? addToFavorite(pokemon) : removeFromFavorite(pokemon)}
+                                    >
+                                        <View style={{padding:5}}>
+                                            <MaterialIcons name={checkInFavorites(pokemon , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
 
                                 <View style={styles.breedCardContainer}>
                                     <View style={styles.breedCardHeader}>
