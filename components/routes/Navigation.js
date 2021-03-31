@@ -12,6 +12,7 @@ import PokemonSingle from "../views/Pokemon/PokemonSingle"
 import ItemLists from "../views/Items/ItemLists"
 import PokemonSearch from "../views/Pokemon/PokemonSearch";
 import FavoriteLists from "../views/Favorites/FavoriteLists";
+import PokemonFilter from "../views/Pokemon/PokemonFilter";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,6 +44,11 @@ const PokemonStackNavigator = () => (
             name="PokemonSearch"
             component={PokemonSearch}
             options={({navigation})=>headerTitle('Search Pokemon' , navigation)}
+        />
+        <Stack.Screen
+            name="PokemonFilter"
+            component={PokemonFilter}
+            options={({navigation})=>headerTitle('Filter Pokemon' , navigation)}
         />
     </Stack.Navigator>
 )

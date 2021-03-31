@@ -15,14 +15,13 @@ import { checkInFavorites } from "../../helpers/favorites.helper"
 
 const PokemonLists = (props) => {
     const {navigation} = props
-    const [pokemons , setPokemons] = useContext(PokemonContext)
+    const [pokemons , setPokemons , filters , setFilters] = useContext(PokemonContext)
     const [favorites , setFavorites] = useContext(AsyncStoreContext)
-    const [fetchUrlParams,setFetchUrlParams] = useState({offset:0,limit:10})
     const [loading , setLoading] = useState(false)
 
     useEffect(()=>{
         const abortController = new AbortController()
-        fetchPokemons(fetchUrlParams.limit,fetchUrlParams.offset)
+        fetchPokemons(filters.limit,filters.offset)
         return ()=>{
             abortController.abort()
         }
@@ -34,6 +33,12 @@ const PokemonLists = (props) => {
             setPokemons(sortedByOrder)
         }
     },[pokemons])
+
+    // useEffect(()=>{
+    //     if(filters.default){
+    //         fetchPokemons(filters.offset,filters.limit)
+    //     }
+    // },[filters])
 
     const fetchPokemons = (limit,offset) => {
         setLoading(true)
@@ -54,10 +59,31 @@ const PokemonLists = (props) => {
         }).catch(e => console.log('FETCH FAILED',e))
     }
 
+    const clearFilter = () => {
+        setLoading(true)
+        axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${0}&limit=${10}`)
+        .then(res => {
+            let pokemonsRes = res.data.results
+            let pokemonArr = []
+            pokemonsRes.forEach((pokemon)=>{
+                axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+                .then(res=>{
+                    pokemonArr.push(res.data)
+                    if(pokemonArr.length===10){
+                        setPokemons(pokemonArr)
+                        setFilters({...filters,default:false,start:"",end:"",selectedTypes:[]})
+                        setLoading(false)
+                    }
+                }).catch(e=>console.log(e))
+            })
+        }).catch(e => console.log('FETCH FAILED',e))
+    }
+
+
     const loadMorePokemons = () => {
-        let newOffset = fetchUrlParams.offset + 10
-        setFetchUrlParams({...fetchUrlParams,offset:newOffset})
-        fetchPokemons(fetchUrlParams.limit,newOffset)  
+        let newOffset = filters.offset + 10
+        setFilters({...filters,offset:newOffset})
+        fetchPokemons(filters.limit,newOffset)  
     }
 
     const addToFavorite = (pokemon) => {
@@ -73,87 +99,99 @@ const PokemonLists = (props) => {
         AsyncStorage.setItem("favoritesPokemons" , JSON.stringify(filtered))
     }
 
-    console.log("FAVORITES", favorites)
+    // console.log("FAVORITES", favorites)
 
     return(
         <View style={pokemonStyles.container}>
             {pokemons.length?
-            <FlatList
-                data={pokemons}
-                keyExtractor={(item,i)=>item.id.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                renderItem={({item})=>{
-                    return(
-                        <View style={pokemonStyles.card}>
-                            <View style={pokemonStyles.cardHeader}>
-                                <Text style={pokemonStyles.pokemonName}>{item.name.toUpperCase()}</Text>
-                                <Text style={pokemonStyles.pokemonId}>#N {item.id}</Text>
-                            </View>
-                            <View style={pokemonStyles.pokemonImage}>
-                                <Image className="img" style={{width: 100, height: 100}} 
-                                    source={{uri : generatePokemonImage(item)}}
-                                    resizeMode={'cover'}
-                                />
-                                <View style={{position:"absolute" , top:0 , right:0}}>
-                                    <TouchableOpacity 
-                                        onPress={()=>checkInFavorites(item , favorites)? addToFavorite(item) : removeFromFavorite(item)}
-                                    >
-                                        <View style={{padding:5}}>
-                                            <MaterialIcons name={checkInFavorites(item , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
-                                        </View>
-                                    </TouchableOpacity>
+                <FlatList
+                    data={pokemons}
+                    keyExtractor={(item,i)=>item.id.toString()}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item})=>{
+                        return(
+                            <View style={pokemonStyles.card}>
+                                <View style={pokemonStyles.cardHeader}>
+                                    <Text style={pokemonStyles.pokemonName}>{item.name.toUpperCase()}</Text>
+                                    <Text style={pokemonStyles.pokemonId}>#N {item.id}</Text>
                                 </View>
-                            </View>
-                            <View style={pokemonStyles.cardFooter}>
-                                {item.types.map((type,i)=>
-                                    <View key={i} style={pokemonStyles.pokemonTypes}>
-                                        <Image 
-                                            style={{width:20,height:20}} 
-                                            source={{uri:generateTypeIcon(type.type.name)
-                                        }}/>
+                                <View style={pokemonStyles.pokemonImage}>
+                                    <Image className="img" style={{width: 100, height: 100}} 
+                                        source={{uri : generatePokemonImage(item)}}
+                                        resizeMode={'cover'}
+                                    />
+                                    <View style={{position:"absolute" , top:0 , right:0}}>
+                                        <TouchableOpacity 
+                                            onPress={()=>checkInFavorites(item , favorites)? addToFavorite(item) : removeFromFavorite(item)}
+                                        >
+                                            <View style={{padding:5}}>
+                                                <MaterialIcons name={checkInFavorites(item , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
-                                )}
-                                <View style={pokemonStyles.pokemonView}>
-                                    <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
-                                        <View style={globalStyles.customPrimaryBtn}>
-                                            <Text style={globalStyles.customPrimaryText}>VIEW</Text>
-                                            <MaterialIcons name="keyboard-arrow-right" color="#fff" size={20}/>
+                                </View>
+                                <View style={pokemonStyles.cardFooter}>
+                                    {item.types.map((type,i)=>
+                                        <View key={i} style={pokemonStyles.pokemonTypes}>
+                                            <Image 
+                                                style={{width:20,height:20}} 
+                                                source={{uri:generateTypeIcon(type.type.name)
+                                            }}/>
                                         </View>
-                                    </TouchableOpacity>
+                                    )}
+                                    <View style={pokemonStyles.pokemonView}>
+                                        <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
+                                            <View style={globalStyles.customPrimaryBtn}>
+                                                <Text style={globalStyles.customPrimaryText}>VIEW</Text>
+                                                <MaterialIcons name="keyboard-arrow-right" color="#fff" size={20}/>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
+                                
                             </View>
-                            
-                        </View>
-                    )
-                }}
-                ListFooterComponent={()=>{
-                    return(
-                        <View style={{padding:20}}>
-                            {loading?
-                            <View
-                                style={{flexDirection:"row"}}
-                            >
-                                {/* <Loader length={1}/> */}
-                                <Fallbacks text="Fetching Pokemons..."/>
-                            </View>
-                            :pokemons.length === 898?null
-                            :<TouchableOpacity onPress={loadMorePokemons}>
-                                <View 
-                                    style={{
-                                        backgroundColor:"coral",
-                                        padding:5,
-                                        borderRadius:50
-                                    }}
+                        )
+                    }}
+                    ListFooterComponent={()=>{
+                        return(
+                            <View style={{padding:20}}>
+                                {loading?
+                                <View
+                                    style={{flexDirection:"row"}}
                                 >
-                                    <Text style={{textAlign:"center",color:"#fff"}}>LOAD MORE</Text>
+                                    {/* <Loader length={1}/> */}
+                                    <Fallbacks text="Fetching Pokemons..."/>
                                 </View>
-                            </TouchableOpacity>
-                            }
-                        </View>
-                    )
-                }}
-            />
+                                :pokemons.length === 898?null
+                                :filters.default?
+                                <TouchableOpacity onPress={clearFilter}>
+                                    <View 
+                                        style={{
+                                            backgroundColor:"coral",
+                                            padding:5,
+                                            borderRadius:50
+                                        }}
+                                    >
+                                        <Text style={{textAlign:"center",color:"#fff"}}>CLEAR FILTER</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                :<TouchableOpacity onPress={loadMorePokemons}>
+                                    <View 
+                                        style={{
+                                            backgroundColor:"coral",
+                                            padding:5,
+                                            borderRadius:50
+                                        }}
+                                    >
+                                        <Text style={{textAlign:"center",color:"#fff"}}>LOAD MORE</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                }
+                            </View>
+                        )
+                    }}
+                />
             :<View
                 style={{
                     flex:1,

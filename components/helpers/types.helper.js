@@ -132,3 +132,26 @@ export const generateTypeColor = (type) => {
     }
     return color
 }
+
+export const getTypes = [
+    {id:"1" , isSelected:false, value:"normal" , bgColor:generateTypeColor("normal") , icon:generateTypeIcon("normal")},
+    {id:"2" , isSelected:false, value:"poison" , bgColor:generateTypeColor("poison") , icon:generateTypeIcon("poison")},
+    {id:"3" , isSelected:false, value:"fighting" , bgColor:generateTypeColor("fighting") , icon:generateTypeIcon("fighting")},
+    {id:"4" , isSelected:false, value:"flying" , bgColor:generateTypeColor("flying") , icon:generateTypeIcon("flying")},
+    {id:"5" , isSelected:false, value:"ground" , bgColor:generateTypeColor("ground") , icon:generateTypeIcon("ground")},
+    {id:"6" , isSelected:false, value:"bug" , bgColor:generateTypeColor("bug") , icon:generateTypeIcon("bug")},
+    {id:"7" , isSelected:false, value:"ghost" , bgColor:generateTypeColor("ghost") , icon:generateTypeIcon("ghost")},
+    {id:"8" , isSelected:false, value:"steal" , bgColor:generateTypeColor("steal") , icon:generateTypeIcon("steal")},
+    {id:"9" , isSelected:false, value:"fire" , bgColor:generateTypeColor("fire") , icon:generateTypeIcon("fire")},
+    {id:"10" , isSelected:false, value:"water" , bgColor:generateTypeColor("water") , icon:generateTypeIcon("water")},
+    {id:"11" , isSelected:false, value:"rock" , bgColor:generateTypeColor("rock") , icon:generateTypeIcon("rock")},
+    {id:"12" , isSelected:false, value:"grass" , bgColor:generateTypeColor("grass") , icon:generateTypeIcon("grass")},
+    {id:"13" , isSelected:false, value:"electric" , bgColor:generateTypeColor("electric") , icon:generateTypeIcon("electric")},
+    {id:"14" , isSelected:false, value:"psychic" , bgColor:generateTypeColor("psychic") , icon:generateTypeIcon("psychic")},
+    {id:"15" , isSelected:false, value:"ice" , bgColor:generateTypeColor("ice") , icon:generateTypeIcon("ice")},
+    {id:"16" , isSelected:false, value:"dragon" , bgColor:generateTypeColor("dragon") , icon:generateTypeIcon("dragon")},
+    {id:"17" , isSelected:false, value:"dark" , bgColor:generateTypeColor("dark") , icon:generateTypeIcon("dark")},
+    {id:"18" , isSelected:false, value:"fairy" , bgColor:generateTypeColor("fairy") , icon:generateTypeIcon("fairy")},
+    {id:"19" , isSelected:false, value:"shadow" , bgColor:generateTypeColor("shadow") , icon:generateTypeIcon("shadow")},
+    {id:"20" , isSelected:false, value:"undefined" , bgColor:generateTypeColor("undefined") , icon:generateTypeIcon("undefined")},
+]

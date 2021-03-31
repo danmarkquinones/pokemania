@@ -27,19 +27,21 @@ const ItemLists=(props)=>{
     return(
         <View>
             <Text>ITEM LISTS</Text>
-            {itemsLists.length?<FlatList
-                data={itemsLists}
-                keyExtractor={(item,i)=>item.id.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                renderItem={({item})=>{
-                    return(
-                        <View>
-                            <Text>{item.name}</Text>
-                        </View>
-                    )
-                }}
-            />:null}
+            {itemsLists.length?
+                <FlatList
+                    data={itemsLists}
+                    keyExtractor={(item,i)=>item.id.toString()}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item})=>{
+                        return(
+                            <View>
+                                <Text>{item.name}</Text>
+                            </View>
+                        )
+                    }}
+                />
+            :null}
         </View>
     )
 }

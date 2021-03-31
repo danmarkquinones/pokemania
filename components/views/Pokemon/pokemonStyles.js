@@ -151,5 +151,44 @@ export const pokemonStyles = StyleSheet.create({
         textAlign:"center",
         // textTransform:"capitalize",
         fontSize:15
+    },
+    filterTextFieldDiv:{
+        flex:1,
+        borderWidth:1,
+        borderColor:"tomato",
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",
+        padding:2,
+        backgroundColor:"tomato",
+        borderRadius:5,
+    },
+    filterTextField:{
+        backgroundColor:"#fff",
+        height:30,
+        // width:100,
+        flex:1,
+        borderRadius:5,
+        paddingHorizontal:10
+    },
+    filterSubmitButtonView:{
+        backgroundColor:"tomato" , 
+        borderRadius:5 , 
+        flex:1,
+        display:"flex" , 
+        alignItems:"center" , 
+        paddingHorizontal:20,
+        paddingVertical:5
+    },
+    typeListView:{
+        flex:1,
+        // width:100,
+        margin:5,
+        paddingVertical:5,
+        paddingHorizontal:10,
+        // display:"flex",
+        // flexDirection:"row",
+        // alignItems:"center",
+        borderRadius:4
     }
 })

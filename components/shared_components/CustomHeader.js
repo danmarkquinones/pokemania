@@ -120,7 +120,7 @@ const CustomHeader = (props) => {
                 style={[navigationStyles.containerRow , {justifyContent:"flex-end"}]}
             >
                 {title==="Pokedex"?<View style={{marginRight:3}}>
-                    <TouchableOpacity style={navigationStyles.headerIcon} onPress={()=>navigation.navigate("PokemonSearch")}>
+                    <TouchableOpacity style={navigationStyles.headerIcon} onPress={()=>navigation.navigate("PokemonFilter")}>
                         <MaterialIcons  name='filter-list' size={18} color='#F93318' style={navigationStyles.searchIcon} />
                     </TouchableOpacity>
                 </View>:null}
