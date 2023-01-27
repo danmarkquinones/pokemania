@@ -34,12 +34,6 @@ const PokemonLists = (props) => {
         }
     },[pokemons])
 
-    // useEffect(()=>{
-    //     if(filters.default){
-    //         fetchPokemons(filters.offset,filters.limit)
-    //     }
-    // },[filters])
-
     const fetchPokemons = (limit,offset) => {
         setLoading(true)
         axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
@@ -107,7 +101,8 @@ const PokemonLists = (props) => {
                 <FlatList
                     data={pokemons}
                     keyExtractor={(item,i)=>item.id.toString()}
-                    numColumns={2}
+                    numColumns={filters.isGridView? 2 : 1}
+                    key={filters.isGridView}
                     showsVerticalScrollIndicator={false}
                     renderItem={({item})=>{
                         return(
@@ -116,40 +111,81 @@ const PokemonLists = (props) => {
                                     <Text style={pokemonStyles.pokemonName}>{item.name.toUpperCase()}</Text>
                                     <Text style={pokemonStyles.pokemonId}>#N {item.id}</Text>
                                 </View>
-                                <View style={pokemonStyles.pokemonImage}>
-                                    <Image className="img" style={{width: 100, height: 100}} 
-                                        source={{uri : generatePokemonImage(item)}}
-                                        resizeMode={'cover'}
-                                    />
-                                    <View style={{position:"absolute" , top:0 , right:0}}>
-                                        <TouchableOpacity 
-                                            onPress={()=>checkInFavorites(item , favorites)? addToFavorite(item) : removeFromFavorite(item)}
-                                        >
-                                            <View style={{padding:5}}>
-                                                <MaterialIcons name={checkInFavorites(item , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
+                                <View
+                                    style={{
+                                        flexDirection:filters.isGridView?"column":"row",
+                                        alignItems:"center",
+                                        justifyContent:"space-between"
+                                    }}
+                                >
+                                    <View style={pokemonStyles.pokemonImage}>
+                                        <Image className="img" style={{width: 100, height: 100}} 
+                                            source={{uri : generatePokemonImage(item)}}
+                                            resizeMode={'cover'}
+                                        />
+                                        {filters.isGridView?
+                                            <View style={{position:"absolute" , top:0 , right:-20}}>
+                                                <TouchableOpacity 
+                                                    onPress={()=>checkInFavorites(item , favorites)? addToFavorite(item) : removeFromFavorite(item)}
+                                                >
+                                                    <View style={{padding:5}}>
+                                                        <MaterialIcons name={checkInFavorites(item , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
+                                                    </View>
+                                                </TouchableOpacity>
                                             </View>
-                                        </TouchableOpacity>
+                                        :null}
                                     </View>
-                                </View>
-                                <View style={pokemonStyles.cardFooter}>
-                                    {item.types.map((type,i)=>
-                                        <View key={i} style={pokemonStyles.pokemonTypes}>
-                                            <Image 
-                                                style={{width:20,height:20}} 
-                                                source={{uri:generateTypeIcon(type.type.name)
-                                            }}/>
+                                    {filters.isGridView?
+                                        <View style={pokemonStyles.cardFooter}>
+                                            {item.types.map((type,i)=>
+                                                <View key={i} style={[pokemonStyles.pokemonTypes]}>
+                                                    <Image 
+                                                        style={{width:20,height:20}} 
+                                                        source={{uri:generateTypeIcon(type.type.name)
+                                                    }}/>
+                                                </View>
+                                            )}
+                                            <View style={pokemonStyles.pokemonView}>
+                                                <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
+                                                    <View style={globalStyles.customPrimaryBtn}>
+                                                        <Text style={globalStyles.customPrimaryText}>VIEW</Text>
+                                                        <MaterialIcons name="keyboard-arrow-right" color="#fff" size={20}/>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    )}
-                                    <View style={pokemonStyles.pokemonView}>
-                                        <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
-                                            <View style={globalStyles.customPrimaryBtn}>
-                                                <Text style={globalStyles.customPrimaryText}>VIEW</Text>
-                                                <MaterialIcons name="keyboard-arrow-right" color="#fff" size={20}/>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
+                                    :<View style={{justifyContent:"flex-end" , marginHorizontal:10}}>
+
+                                        <View style={{marginVertical:5 , flex:1 , justifyContent:"flex-end"}}>
+                                            <TouchableOpacity 
+                                                onPress={()=>checkInFavorites(item , favorites)? addToFavorite(item) : removeFromFavorite(item)}
+                                            >
+                                                <View style={{padding:5 , justifyContent:"flex-end"}}>
+                                                    <MaterialIcons name={checkInFavorites(item , favorites)?"favorite-border":"favorite"} color="#F93318" size={30}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style={{flexDirection:"row" , marginVertical:5}}>
+                                            {item.types.map((type,i)=>
+                                                <View key={i} style={[pokemonStyles.pokemonTypes]}>
+                                                    <Image 
+                                                        style={{width:20,height:20}} 
+                                                        source={{uri:generateTypeIcon(type.type.name)
+                                                    }}/>
+                                                </View>
+                                            )}
+                                        </View>
+                                        <View>
+                                            <TouchableOpacity onPress={()=>navigation.navigate('PokemonSingle' , item)}>
+                                                <View style={globalStyles.customPrimaryBtn}>
+                                                    <Text style={globalStyles.customPrimaryText}>VIEW</Text>
+                                                    <MaterialIcons name="keyboard-arrow-right" color="#fff" size={20}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>}
                                 </View>
-                                
                             </View>
                         )
                     }}

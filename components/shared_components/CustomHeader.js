@@ -5,10 +5,12 @@ import {navigationStyles} from '../routes/navigationStyles'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SearchesContext } from "../context/searchesContext";
 import axios from "axios"
+import { PokemonContext } from "../context/pokemonContext";
 
 const CustomHeader = (props) => {
     const {title , navigation} = props
     const [results , setResults , recentSearches , setRecentSearches] = useContext(SearchesContext)
+    const [pokemons , setPokemons , filters , setFilters] = useContext(PokemonContext)
 
     const push = (searchArr) => {
         // console.log("VALUE", results.text , searchArr)
@@ -40,7 +42,7 @@ const CustomHeader = (props) => {
         var searchArr = recentSearches
         
 
-        if(e.key==="Enter"){
+        // if(e.nativeEvent.key === "Enter"){
             if(recentSearches.length > 5){
                 searchArr.pop()
                 setRecentSearches([...searchArr])
@@ -51,7 +53,7 @@ const CustomHeader = (props) => {
                 // console.log("searchArr<5" , searchArr)
                 push(searchArr)
             }
-        }
+        // }
     }
 
     const onClick = () => {
@@ -63,6 +65,11 @@ const CustomHeader = (props) => {
         }else{
             push(searchArr)
         }
+    }
+
+    const toggleView = () => {
+        console.log(filters.isGridView)
+        setFilters({...filters , isGridView : !filters.isGridView})
     }
 
 
@@ -109,7 +116,9 @@ const CustomHeader = (props) => {
                         value={results.text}
                         placeholder="Search Pokemon Name"
                         onChangeText={text=>handleChange(text)}
-                        onKeyPress={onSubmit}
+                        // onKeyPress={onSubmit}
+                        onSubmitEditing={onSubmit}
+                        returnKeyType='search'
                     />
                 </View>
             :<View>
@@ -119,11 +128,23 @@ const CustomHeader = (props) => {
             <View
                 style={[navigationStyles.containerRow , {justifyContent:"flex-end"}]}
             >
-                {title==="Pokedex"?<View style={{marginRight:3}}>
-                    <TouchableOpacity style={navigationStyles.headerIcon} onPress={()=>navigation.navigate("PokemonFilter")}>
-                        <MaterialIcons  name='filter-list' size={18} color='#F93318' style={navigationStyles.searchIcon} />
-                    </TouchableOpacity>
-                </View>:null}
+                {title==="Pokedex"?
+                    <View>
+                        <TouchableOpacity 
+                            style={navigationStyles.headerIcon}
+                            onPress={()=>toggleView()}
+                        >
+                            <MaterialIcons  name={filters.isGridView?"grid-view":"list"} size={18} color='#F93318' style={navigationStyles.searchIcon} />
+                        </TouchableOpacity>
+                    </View>
+                :null}
+                {title==="Pokedex"?
+                    <View style={{marginRight:3}}>
+                        <TouchableOpacity style={navigationStyles.headerIcon} onPress={()=>navigation.navigate("PokemonFilter")}>
+                            <MaterialIcons  name='filter-list' size={18} color='#F93318' style={navigationStyles.searchIcon} />
+                        </TouchableOpacity>
+                    </View>
+                :null}
                 {title!=="Search Pokemon"?
                     <View>
                         <TouchableOpacity style={navigationStyles.headerIcon} onPress={()=>navigation.navigate("PokemonSearch")}>

@@ -14,7 +14,8 @@ export const PokemonContextProvider = (props) => {
         types:getTypes,
         selectedTypes:[],
         height:"",
-        weight:""
+        weight:"",
+        isGridView:false
     })
 
     return (

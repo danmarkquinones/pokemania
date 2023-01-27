@@ -10,11 +10,16 @@ export const pokemonStyles = StyleSheet.create({
         flexDirection:"row",
         alignItems:"center"
     },
+    viewTypeContainer:{
+        flex:1,
+        alignItems:"center",
+        justifyContent:"flex-end"
+    },
     card:{
         flex:1,
         backgroundColor:"#fff",
         margin:5,
-        width:100,
+        // width:100,
         borderBottomLeftRadius: 10,
         borderTopRightRadius:10,
         overflow:"hidden",
@@ -31,6 +36,7 @@ export const pokemonStyles = StyleSheet.create({
         padding:8,
         flexDirection:'row',
         alignItems:"center",
+        flex:1
     },
     pokemonName:{
         flex:1,

@@ -4,9 +4,9 @@
     "slug": "pokedex_app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/pokeball.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/pokemania.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
